@@ -7,12 +7,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.ERole;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,14 +35,14 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    @Transactional(readOnly= true)
+    @Transactional(readOnly = true)
     @Override
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
     }
 
-    @Transactional(readOnly= true)
+    @Transactional(readOnly = true)
     @Override
     public List<User> allUsers() {
         return userRepository.findAll();
@@ -54,21 +51,19 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
     @Override
     public boolean saveUser(User user) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
-
         if (userFromDB != null) {
             return false;
         }
-
-        user.setRoles(Collections.singleton(new Role(1L, ERole.ROLE_USER)));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
 
     @Override
+    @Transactional
     public void updateUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     @Override

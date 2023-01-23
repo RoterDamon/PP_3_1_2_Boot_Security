@@ -110,4 +110,8 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
 }
