@@ -68,7 +68,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService {
     @Override
     public void updateUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     @Override
